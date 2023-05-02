@@ -43,6 +43,8 @@ class Welcome(GridLayout):
 class Template(GridLayout):
     def __init__(self, **kwargs):
         super(Template, self).__init__(**kwargs)
+        self.cols = 2
+
         self.add_widget(Label(text='User Name'))
         self.username = TextInput(multiline=False)
         self.add_widget(self.username)
@@ -55,7 +57,6 @@ class Template(GridLayout):
         button1.bind(on_press=self.clear)
         self.add_widget(button1)
 
-
     def clear(self, instance):
         self.username.text = ''
         self.password.text = ''
@@ -65,12 +66,11 @@ class Template(GridLayout):
 class LoginScreen(Template):
     def __init__(self, **kwargs):
         super(LoginScreen, self).__init__(**kwargs)
-        self.cols = 2
 
         button = Button(text="Login")
         button.bind(on_press=self.callback)
         self.add_widget(button)
-        button2 = Button(text="Go Back")
+        button2 = Button(text="Go Back ->")
         button2.bind(on_press=self.back)
         self.add_widget(button2)
 
@@ -84,30 +84,27 @@ class LoginScreen(Template):
         print("Password:", self.password.text)
 
 
-
-
 class CreateAccount(Template):
     def __init__(self, **kwargs):
         super(CreateAccount, self).__init__(**kwargs)
-        self.cols = 2
 
         button = Button(text="Create An Account")
         button.bind(on_press=self.callback)
         self.add_widget(button)
-        button2 = Button(text="Go Back")
+
+        button2 = Button(text="<- Go Back")
         button2.bind(on_press=self.back)
         self.add_widget(button2)
+
+    # This cant be put in template as it will be unique to this class.
+    def callback(self, instance):
+        print("Username:", self.username.text)
+        print("Password:", self.password.text)
 
     def back(self, instance):
         app = App.get_running_app()
         app.root.transition = SlideTransition(direction='right')
         app.root.current = 'welcome'
-
-
-
-    def callback(self, instance):
-        print("Username:", self.username.text)
-        print("Password:", self.password.text)
 
 
 class MyApp(App):
@@ -118,8 +115,10 @@ class MyApp(App):
         # Create the screens
         welcome_screen = Screen(name='welcome')
         welcome_screen.add_widget(Welcome())
+
         login_screen = Screen(name='login')
         login_screen.add_widget(LoginScreen())
+
         create_screen = Screen(name='create')
         create_screen.add_widget(CreateAccount())
 
